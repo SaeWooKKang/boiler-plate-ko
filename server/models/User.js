@@ -52,6 +52,7 @@ userSchema.pre('save', function(next) {
   }
 })
 
+// 스키마를 맵핑한 모델의 프로퍼티 메서드 할당됨 
 userSchema.methods.comparePassword = function (plainPassword, cb) {
   // plainPassword 12345566  암호화된 비밀번호  2344$#$#$#$ㄹㄴㄴㅇㄹㄴ
   // this 는 user 객체
@@ -75,27 +76,27 @@ userSchema.methods.generateToken = function(cb) {
 
   user.token = token;
   // db 저장, cb 호출로 client 쿠키에 저장
-  user.save((err, uer) => {
+  user.save((err, user) => {
     if(err) return cb(err)
     cb(null, user)
   })
 }
 
+// 정적 메서드 정의
 userSchema.statics.findByToken = function (token, cb) {
-  var user = this;
-
+  let user = this; // User
   // user._id + '' = token
   // 토큰을 decode 한다.
-  jwt.verify(token, 'secretToken', function(err, decoded){
+  jwt.verify(token, 'secretToken', (err, decoded) => {
     // 유저 아이디를 이용해서 유저를 찾은 다음에 
     // 클라이언트에서 가져온 token과 DB에 보관된 토큰이 일치하는지 확인
 
-    user.findOne({"_id": decoded, "token": token}, function(err, user){
+    user.findOne({"_id": decoded, "token": token}, (err, user) => {
       if(err) return cb(err);
       cb(null, user);
-    })
+    });
   })
-}
+};
 
 const User = mongoose.model('User', userSchema);
 

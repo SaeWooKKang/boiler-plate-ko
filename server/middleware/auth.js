@@ -10,7 +10,7 @@ var auth = (req, res, next) => {
   User.findByToken(token, (err, user) => {
     if (err) throw err;
     if (!user) return res.json({isAuth: false, error: true})
-
+    console.log('findByToken으로' ,  user);
     req.token = token;
     req.user = user;
     next();

@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 8000;
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { auth } = require('./middleware/auth');
 
