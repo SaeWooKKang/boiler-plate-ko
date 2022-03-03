@@ -3,9 +3,9 @@ const app = express();
 const port = 8000;
 // const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { auth } = require('./middleware/auth');
+const { auth } = require('./middleware/auth.js');
 
-const config = require('./config/key');
+const config = require('./config/key.js');
 
 // application/x-wwww-formurlencoded
 app.use(express.urlencoded({extended: true})); // body-parser 가 express에 내장
@@ -13,7 +13,7 @@ app.use(express.urlencoded({extended: true})); // body-parser 가 express에 내
 app.use(express.json());
 app.use(cookieParser());
 
-const {User} = require('./models/User');
+const {User} = require('./models/User.js');
 
 const mongoose = require('mongoose');
 
@@ -32,7 +32,7 @@ app.get('/', (req, res) => res.send('Hello World!'));
 // 회원 가입을 위한 route
 // User 스키마를 맵핑한 모델(클래스)로 인스턴스 만들고, 암호화 후 db에 저장
 app.post('/api/users/register', (req, res) => {
-  // 회원 가입할 때  필요한 정보들을 client에서 가져오면 
+  // client에서 회원가입 데이터를 받고,  
   // 그것들을 데이터베이스에 넣어준다.
   const user = new User(req.body);
 
@@ -94,9 +94,11 @@ app.get('/api/users/auth', auth, (req, res) => {
 });
 
 app.get('/api/users/logout', auth, (req, res) => {
+  // auth에서 token으로 user정보 찾고, req에 담아줌 
+  // DB에 _id에 해당하는 토큰 지움 
   User.findOneAndUpdate({_id: req.user._id},
-    {token: ""}
-    , (err, user) => {
+    {token: ""},
+    (err, user) => {
       if (err) return res.json({success: false, err});
       return res.status(200).send({
         success: true

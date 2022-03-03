@@ -34,6 +34,7 @@ const userSchema = mongoose.Schema({
   }
 });
 
+// 저장 전 암호화
 userSchema.pre('save', function(next) {
   let user = this; // User의 인스턴스
   if(user.isModified('password')) {
@@ -61,9 +62,10 @@ userSchema.methods.comparePassword = function (plainPassword, cb) {
     if(err) return cb(err);
     // console.log('match: ', isMatch); // boolean 값 
     cb(null, isMatch);
-  })
-}
+  });
+};
 
+// token 생성
 userSchema.methods.generateToken = function(cb) {
   
   let user = this;
@@ -79,8 +81,8 @@ userSchema.methods.generateToken = function(cb) {
   user.save((err, user) => {
     if(err) return cb(err)
     cb(null, user)
-  })
-}
+  });
+};
 
 // 정적 메서드 정의
 userSchema.statics.findByToken = function (token, cb) {
@@ -88,14 +90,14 @@ userSchema.statics.findByToken = function (token, cb) {
   // user._id + '' = token
   // 토큰을 decode 한다.
   jwt.verify(token, 'secretToken', (err, decoded) => {
+    
     // 유저 아이디를 이용해서 유저를 찾은 다음에 
     // 클라이언트에서 가져온 token과 DB에 보관된 토큰이 일치하는지 확인
-
     user.findOne({"_id": decoded, "token": token}, (err, user) => {
       if(err) return cb(err);
       cb(null, user);
     });
-  })
+  });
 };
 
 const User = mongoose.model('User', userSchema);

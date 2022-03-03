@@ -1,10 +1,12 @@
-import { response } from 'express';
-import React, {useState} from 'react';
-import {useDispatch} from 'react-redux';
-import { loginUser} from '../../../_actions/user_action';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { loginUser } from '../../../_actions/user_action';
+import { useNavigate} from 'react-router-dom';
+import Auth from '../../../hoc/auth';
 
-function LoginPage() {
+const LoginPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [Email, setEmail] = useState('');
   const [Passowrd, setPassword] = useState('');
@@ -14,7 +16,7 @@ function LoginPage() {
   };
   const onPasswordHandler = event => {
     setPassword(event.currentTarget.value);
-  }
+  };
   const onSubmitHandler = event => {
     event.preventDefault();
 
@@ -22,10 +24,12 @@ function LoginPage() {
       email: Email,
       password: Passowrd
     };
-
-    dispatch(loginUser(body));
-
     
+    dispatch(loginUser(body)) // dispatch 와 reducer 함수 인자 연관성 찾아보기
+      .then(response => response.payload.loginSuccess
+          ? navigate('/') // 페이지 이동
+          : alert('Fail to login')
+      );
   };
   return (
     <div style={{
@@ -42,7 +46,7 @@ function LoginPage() {
         <button>Login</button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default LoginPage;
+export default Auth(LoginPage, false);
