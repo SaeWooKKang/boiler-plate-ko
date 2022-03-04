@@ -6,7 +6,7 @@ import Auth from '../../../hoc/auth';
 const LandingPage = () => {
   const navigate = useNavigate();
 
-  const onLogiutHandler = () => {
+  const onLogoutHandler = () => {
     axios.get('./api/users/logout')
       .then(response => response.data.success 
           ? navigate('/login') 
@@ -20,7 +20,7 @@ const LandingPage = () => {
     }}>
       <div style={{display:'flex', flexDirection:'column'}}>
         <h2>시작 페이지...</h2>
-        <button onClick={onLogiutHandler}>로그아웃</button>
+        <button onClick={onLogoutHandler}>로그아웃</button>
       </div>
     </div>
   );
